@@ -1,0 +1,15 @@
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+server:
+  port: 8880
+  servlet:
+    encoding:
+      force-response: true
+
+logging:
+  level:
+    com.example.pro.controller: warn
+
