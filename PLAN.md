@@ -1,7 +1,13 @@
-# PushMind 백엔드 개발 계획 (v2)
+# PushMind 백엔드 개발 계획 (v3)
 
 > 명언 기반 동기부여 웹 서비스의 백엔드 개발 우선순위 및 작업 목록
-> **피드백 반영:** API 경로 분리, 카카오 OAuth 도입, 알고리즘 개발 집중
+> **피드백 반영:** API 경로 분리, 카카오 OAuth 도입, 알고리즘 개발 집중, TDD 적용
+
+## 개발 원칙
+
+- **테스트 주도 개발 (TDD):** 모든 API 엔드포인트는 실패하는 테스트 케이스를 먼저 작성하고, 이를 통과시키는 코드를 구현하는 방식으로 개발합니다.
+- **API 경로 분리:** 사용자 API (`/api/v1`)와 관리자 API (`/api/admin`)를 명확히 구분합니다.
+- **핵심 기능 집중:** 불필요한 테이블과 컬럼은 최소화하고, 명언 추천 알고리즘 고도화에 집중합니다.
 
 ## Phase 1: 프로젝트 기본 설정 및 모델링
 
@@ -21,35 +27,35 @@
 - [ ] **CORS(Cross-Origin Resource Sharing) 설정**
     - React 클라이언트(Vercel) 요청을 허용하도록 `WebMvcConfigurer` 설정
 
-## Phase 2: 사용자 API 구현 (`/api/v1`)
+## Phase 2: 사용자 API 구현 (`/api/v1`) - TDD 적용
 
 - [ ] **[F-01 & F-03] 명언 조회 API**
     - **Endpoint:** `GET /api/v1/quotes/random`
     - **Request:** (Header) `X-User-Token`: `String` (UUID)
     - **Response:** `QuoteResponse` (id, content, speaker)
-    - **로직:**
-        1. `userToken`을 기준으로 최근 조회한 5개 명언 ID를 `feedback` 테이블에서 조회
-        2. 해당 명언들을 제외하고, `score` 기반 가중치 랜덤 알고리즘을 통해 1개 추천
-        3. 조회 기록을 `feedback` 테이블에 저장 (liked=false)
+    - **TDD 사이클:**
+        1. `random` API 호출 시 200 OK와 `QuoteResponse`를 반환하는 테스트 작성
+        2. `userToken` 기반으로 최근 본 명언을 제외하는지 검증하는 테스트 작성
+        3. 알고리즘 적용 후, 스코어 높은 명언이 더 자주 노출되는지 확률적으로 검증하는 테스트 추가
 
 - [ ] **[F-02] 피드백 처리 API**
     - **Endpoint:** `POST /api/v1/feedback`
     - **Request:** `FeedbackRequest` (quoteId, liked) + (Header) `X-User-Token`
     - **Response:** 성공/실패 메시지
-    - **로직:**
-        1. `userToken`과 `quoteId`로 기존 `feedback` 기록을 찾고, `liked` 상태 업데이트
-        2. `liked`가 `true`로 변경되면 `quotes` 테이블의 `score` +1, `false`로 변경되면 -1
-        3. 중복 피드백 방지 로직 (이미 동일한 상태로 평가된 경우 409 Conflict 반환)
+    - **TDD 사이클:**
+        1. 첫 '좋아요' 요청 시 201 Created와 함께 `score`가 1 증가하는지 테스트
+        2. 동일 사용자가 다시 '좋아요' 요청 시 409 Conflict를 반환하는 테스트
+        3. '좋아요' 취소 시 `score`가 1 감소하는지 테스트
 
 - [ ] **[F-05] 인기 명언 순위 API**
     - **Endpoint:** `GET /api/v1/quotes/top`
     - **Request:** (Query) `limit`: `Int` (기본값 10)
     - **Response:** `List<QuoteResponse>`
+    - **TDD 사이클:**
+        1. `score` 순으로 명언이 올바르게 정렬되어 반환되는지 테스트
+        2. `limit` 파라미터가 정확히 적용되는지 테스트
 
-- [ ] **DTO(Data Transfer Object) 생성**
-    - `QuoteResponse.kt`, `FeedbackRequest.kt`
-
-## Phase 3: 관리자 API 및 인증 구현 (`/api/admin`)
+## Phase 3: 관리자 API 및 인증 구현 (`/api/admin`) - TDD 적용
 
 - [ ] **카카오 OAuth 2.0 설정**
     - `build.gradle.kts`에 `spring-boot-starter-oauth2-client` 의존성 추가
@@ -61,14 +67,16 @@
         - `POST /api/admin/quotes`
         - `PUT /api/admin/quotes/{id}`
         - `DELETE /api/admin/quotes/{id}`
-    - **Request:** `QuoteAdminRequest` (content, speaker)
     - **보안:** `@AuthenticationPrincipal`을 통해 인증된 관리자(`Role.ADMIN`)만 접근 가능하도록 설정
+    - **TDD 사이클:**
+        1. 인증 없이 API 호출 시 401 Unauthorized 반환 테스트
+        2. 일반 사용자 권한으로 호출 시 403 Forbidden 반환 테스트
+        3. 관리자 권한으로 명언 등록/수정/삭제가 성공하는지 테스트
 
 - [ ] **로그인/로그아웃 및 사용자 정보 조회**
     - **Endpoint:**
         - `GET /login/oauth2/code/kakao` (Redirect URI)
         - `GET /api/admin/me` (인증된 사용자 정보 반환)
-        - `POST /api/admin/logout`
 
 ## Phase 4: 알고리즘 고도화 및 테스트
 
@@ -77,7 +85,7 @@
     - 다양한 알고리즘(e.g., Epsilon-Greedy)을 테스트하고 비교할 수 있는 구조 설계
     - (선택) 점수 감소(decay) 로직 구현 (`@Scheduled` 활용)
 
-- [ ] **단위/통합 테스트 작성**
+- [ ] **통합 테스트 강화**
     - MockMvc를 사용하여 API 엔드포인트별 테스트 코드 작성
     - `@WithMockUser`를 활용하여 인증/인가 테스트 케이스 작성
 
