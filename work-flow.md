@@ -31,6 +31,7 @@
 ## Phase 2: 사용자 API 구현 (TDD)
 
 > **TDD 사이클:** `실패하는 테스트 작성` -> `테스트를 통과하는 최소한의 코드 작성` -> `리팩토링`
+> **중요:** 각 단계, 특히 리팩토링이나 기능 수정 후에는 항상 전체 테스트(`./gradlew test`)를 실행하여 다른 기능에 영향을 주지 않았는지 확인합니다.
 
 ### Task 2.1: [F-01, F-03] 명언 조회 API (`GET /api/v1/quotes/random`)
 1.  **Test:** `QuoteApiTest.kt`에 `@SpringBootTest`와 `@AutoConfigureMockMvc`를 설정합니다.
