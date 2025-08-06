@@ -1,5 +1,6 @@
-package com.pushminds.domain
+package com.pushminds.domain.feedback
 
+import com.pushminds.domain.BaseTimeEntity
 import jakarta.persistence.*
 
 @Entity

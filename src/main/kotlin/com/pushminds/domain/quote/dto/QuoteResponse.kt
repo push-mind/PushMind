@@ -1,4 +1,4 @@
-package com.pushminds.domain.dto
+package com.pushminds.domain.quote.dto
 
 data class QuoteResponse(
     val id: Long,

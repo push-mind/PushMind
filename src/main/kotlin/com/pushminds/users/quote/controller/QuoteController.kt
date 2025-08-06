@@ -1,6 +1,7 @@
-package com.pushminds.users
+package com.pushminds.users.quote.controller
 
-import com.pushminds.domain.dto.QuoteResponse
+import com.pushminds.domain.quote.dto.QuoteResponse
+import com.pushminds.users.quote.service.QuoteService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
@@ -13,7 +14,7 @@ class QuoteController(
 ) {
 
     @GetMapping("/random")
-    fun getRandomQuote(@RequestHeader("X-User-Token") userToken: String): QuoteResponse {
-        return quoteService.getRandomQuote(userToken)
+    fun getRandomQuote(@RequestHeader("X-User-Identifier") userIdentifier: String): QuoteResponse {
+        return quoteService.getRandomQuote(userIdentifier)
     }
 }
