@@ -1,8 +1,4 @@
-spring:
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
-
+# 공통 설정
 server:
   port: 8880
   servlet:
@@ -11,5 +7,53 @@ server:
 
 logging:
   level:
-    com.example.pro.controller: warn
+    com.pushminds: debug
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql: trace
 
+spring:
+  profiles:
+    active: local # 기본 프로필을 local로 설정
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+
+---
+
+# Local 환경 (H2 데이터베이스)
+spring:
+  config:
+    activate:
+      on-profile: local
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:~/testdb
+    driver-class-name: org.h2.Driver
+    username: sar
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create # Local에서는 애플리케이션 실행 시 스키마를 다시 생성
+
+---
+
+# Prod 환경 (MySQL 데이터베이스)
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    # 실제 운영 환경의 Datasource 정보를 입력하세요.
+    url: jdbc:mysql://localhost:3306/pushmind
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: your_username
+    password: your_password
+  jpa:
+    hibernate:
+      ddl-auto: validate # Prod에서는 스키마를 검증만 함
