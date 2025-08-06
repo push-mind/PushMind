@@ -34,7 +34,7 @@
 
 ### Task 2.1: [F-01, F-03] 명언 조회 API (`GET /api/v1/quotes/random`)
 1.  **Test:** `QuoteApiTest.kt`에 `@SpringBootTest`와 `@AutoConfigureMockMvc`를 설정합니다.
-2.  **Test:** `X-User-Token` 헤더와 함께 API를 호출했을 때, 200 OK와 `QuoteResponse` DTO 형식의 JSON이 반환되는지 검증하는 **실패하는 테스트**를 작성합니다.
+2.  **Test:** `X-User-Identifier` 헤더와 함께 API를 호출했을 때, 200 OK와 `QuoteResponse` DTO 형식의 JSON이 반환되는지 검증하는 **실패하는 테스트**를 작성합니다.
 3.  **Code:** `QuoteController`와 `QuoteService`를 생성하고, 임의의 명언을 반환하는 로직을 **최소한으로 구현**하여 테스트를 통과시킵니다.
 4.  **Test:** 특정 사용자가 이전에 봤던 명언이 다시 추천되지 않는지 검증하는 **실패하는 테스트**를 추가합니다. (e.g., 피드백을 남긴 명언은 제외)
 5.  **Code:** `FeedbackRepository`를 사용하여 사용자가 피드백을 남긴 명언 ID 목록을 조회하고, 이를 제외한 명언을 추천하도록 로직을 수정합니다.
@@ -45,10 +45,8 @@
 2.  **Test:** '좋아요'(`liked: true`) 요청 시, 201 Created를 반환하고 해당 명언의 `score`가 1 증가하는지 검증하는 **실패하는 테스트**를 작성합니다.
 3.  **Code:** `FeedbackService`에서 `Feedback`을 저장하고 `Quote`의 `score`를 업데이트하는 로직을 구현하여 테스트를 통과시킵니다.
 4.  **Test:** 동일한 사용자가 동일한 명언에 다시 '좋아요'를 요청하면 409 Conflict를 반환하는 **실패하는 테스트**를 작성합니다.
-5.  **Code:** `FeedbackRepository`에서 `userToken`과 `quoteId`로 기존 피드백이 있는지 확인하는 로직을 추가합니다.
-6.  **Test:** '좋아요'를 취소(`liked: false`)하면 `score`가 1 감소하는지 검증하는 테스트를 추가합니다.
-7.  **Code:** `liked` 값에 따라 `score`를 증감시키는 로직을 구현합니다.
-8.  **Refactor:** `FeedbackService`의 로직을 명확하고 간결하게 개선합니다.
+5.  **Code:** `FeedbackRepository`에서 `userIdentifier`와 `quoteId`로 기존 피드백이 있는지 확인하는 로직을 추가합니다.
+6.  **Refactor:** `FeedbackService`의 로직을 명확하고 간결하게 개선합니다.
 
 ### Task 2.3: [F-05] 인기 명언 순위 API (`GET /api/v1/quotes/top`)
 1.  **Test:** `QuoteApiTest.kt`에 `score`가 높은 순으로 명언 목록이 정렬되어 반환되는지 검증하는 **실패하는 테스트**를 작성합니다.

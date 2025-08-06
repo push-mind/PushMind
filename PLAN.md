@@ -13,7 +13,7 @@
 
 - [ ] **DB 스키마 정의 및 Entity 클래스 생성**
     - `quotes` 테이블: `Quote.kt` (id, content, speaker, score, createdAt)
-    - `feedback` 테이블: `Feedback.kt` (id, quote, userToken, liked, createdAt)
+    - `feedback` 테이블: `Feedback.kt` (id, quoteId, userIdentifier, liked, createdAt) - **`userIdentifier`는 로그인/비로그인 사용자 모두를 식별하는 고유값**
     - `users` 테이블: `User.kt` (id, kakaoId, nickname, role, createdAt) - **관리자 인증용**
     - JPA Auditing을 활용하여 `createdAt` 자동 생성 기능 추가
 
@@ -31,21 +31,20 @@
 
 - [ ] **[F-01 & F-03] 명언 조회 API**
     - **Endpoint:** `GET /api/v1/quotes/random`
-    - **Request:** (Header) `X-User-Token`: `String` (UUID)
+    - **Request:** (Header) `X-User-Identifier`: `String` (클라이언트에서 생성한 고유 식별자)
     - **Response:** `QuoteResponse` (id, content, speaker)
     - **TDD 사이클:**
         1. `random` API 호출 시 200 OK와 `QuoteResponse`를 반환하는 테스트 작성
-        2. `userToken` 기반으로 최근 본 명언을 제외하는지 검증하는 테스트 작성
+        2. `userIdentifier` 기반으로 최근 본 명언을 제외하는지 검증하는 테스트 작성
         3. 알고리즘 적용 후, 스코어 높은 명언이 더 자주 노출되는지 확률적으로 검증하는 테스트 추가
 
 - [ ] **[F-02] 피드백 처리 API**
     - **Endpoint:** `POST /api/v1/feedback`
-    - **Request:** `FeedbackRequest` (quoteId, liked) + (Header) `X-User-Token`
+    - **Request:** `FeedbackRequest` (quoteId, liked) + (Header) `X-User-Identifier`
     - **Response:** 성공/실패 메시지
     - **TDD 사이클:**
         1. 첫 '좋아요' 요청 시 201 Created와 함께 `score`가 1 증가하는지 테스트
         2. 동일 사용자가 다시 '좋아요' 요청 시 409 Conflict를 반환하는 테스트
-        3. '좋아요' 취소 시 `score`가 1 감소하는지 테스트
 
 - [ ] **[F-05] 인기 명언 순위 API**
     - **Endpoint:** `GET /api/v1/quotes/top`

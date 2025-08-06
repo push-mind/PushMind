@@ -1,6 +1,5 @@
 package com.pushminds.domain
 
-import com.pushminds.domain.quote.Quote
 import jakarta.persistence.*
 
 @Entity
@@ -10,11 +9,9 @@ class Feedback(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "quote_id")
-    val quote: Quote,
+    val quoteId: Long,
 
-    val userToken: String,
+    val userIdentifier: String,
 
     var liked: Boolean
 
