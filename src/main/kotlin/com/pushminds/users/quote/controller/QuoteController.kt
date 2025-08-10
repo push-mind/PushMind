@@ -5,6 +5,7 @@ import com.pushminds.users.quote.service.QuoteService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -16,5 +17,10 @@ class QuoteController(
     @GetMapping("/random")
     fun getRandomQuote(@RequestHeader("X-User-Identifier") userIdentifier: String): QuoteResponse {
         return quoteService.getRandomQuote(userIdentifier)
+    }
+
+    @GetMapping("/top")
+    fun getTopQuotes(@RequestParam(defaultValue = "10") limit: Int): List<QuoteResponse> {
+        return quoteService.getTopQuotes(limit)
     }
 }

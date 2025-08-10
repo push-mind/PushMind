@@ -3,6 +3,7 @@ package com.pushminds.users.quote.service
 import com.pushminds.domain.feedback.FeedbackRepository
 import com.pushminds.domain.quote.dto.QuoteResponse
 import com.pushminds.domain.quote.QuoteRepository
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -26,7 +27,20 @@ class QuoteService(
         return QuoteResponse(
             id = quote.id,
             content = quote.content,
-            speaker = quote.speaker
+            speaker = quote.speaker,
+            score = quote.score
         )
+    }
+
+    @Transactional(readOnly = true)
+    fun getTopQuotes(limit: Int): List<QuoteResponse> {
+        return quoteRepository.findByOrderByScoreDesc(PageRequest.of(0, limit)).map {
+            QuoteResponse(
+                id = it.id,
+                content = it.content,
+                speaker = it.speaker,
+                score = it.score
+            )
+        }
     }
 }
