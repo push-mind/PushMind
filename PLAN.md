@@ -3,6 +3,17 @@
 > 명언 기반 동기부여 웹 서비스의 백엔드 개발 우선순위 및 작업 목록
 > **피드백 반영:** API 경로 분리, 카카오 OAuth 도입, 알고리즘 개발 집중, TDD 적용
 
+## 기술 스택
+
+- **언어:** Kotlin
+- **JDK:** 17
+- **프레임워크:** Spring Boot
+- **빌드 도구:** Gradle
+- **데이터베이스:** H2 (개발/테스트), MySQL (운영)
+- **ORM:** Spring Data JPA, Hibernate
+- **테스트:** JUnit 5, Spring Boot Test, MockMvc
+- **기타:** Spring Web (REST API), Jackson (JSON 처리)
+
 ## 개발 원칙
 
 - **테스트 주도 개발 (TDD):** 모든 API 엔드포인트는 실패하는 테스트 케이스를 먼저 작성하고, 이를 통과시키는 코드를 구현하는 방식으로 개발합니다.

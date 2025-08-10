@@ -29,6 +29,12 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // oauth
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+
+    // security test
+    testImplementation("org.springframework.security:spring-security-test")
 }
 
 kotlin {
