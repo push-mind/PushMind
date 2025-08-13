@@ -65,6 +65,8 @@ class AdminQuoteApiTest {
             content = objectMapper.writeValueAsString(request)
         }.andExpect {
             status { isCreated() }
+            jsonPath("$.content") { value("새로운 명언") }
+            jsonPath("$.speaker") { value("새로운 연사") }
         }
     }
 }
