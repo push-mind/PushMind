@@ -1,5 +1,6 @@
 package com.pushminds.users
 
+import com.pushminds.config.TestSecurityConfig
 import com.pushminds.domain.feedback.Feedback
 import com.pushminds.domain.feedback.FeedbackRepository
 import com.pushminds.domain.quote.Quote
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional
 @AutoConfigureMockMvc
 @Transactional
 @WithMockUser(roles = ["USER"])
+@Import(TestSecurityConfig::class)
 class QuoteApiTest {
 
     @Autowired

@@ -1,15 +1,15 @@
 package com.pushminds.users
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.pushminds.domain.feedback.Feedback
+import com.pushminds.config.TestSecurityConfig
 import com.pushminds.domain.feedback.dto.FeedbackRequest
 import com.pushminds.domain.quote.Quote
 import com.pushminds.domain.quote.QuoteRepository
-import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 @AutoConfigureMockMvc
 @Transactional
 @WithMockUser(roles = ["USER"])
+@Import(TestSecurityConfig::class)
 class FeedbackApiTest {
 
     @Autowired
@@ -37,10 +38,6 @@ class FeedbackApiTest {
         val savedQuote = quoteRepository.save(Quote(content = "테스트 명언", speaker = "테스트 연사", score = 0))
         val request = FeedbackRequest(quoteId = savedQuote.id, liked = true)
 
-        //when
-        val quote = quoteRepository.findById(request.quoteId).orElseThrow()
-        quote.score += 1 // 우선 단순 증가 로직만 구현
-
         // when & then
         mockMvc.post("/api/v1/feedback") {
             header("X-User-Identifier", "test-user")
@@ -51,6 +48,9 @@ class FeedbackApiTest {
         }
 
         val updatedQuote = quoteRepository.findById(savedQuote.id).get()
+        println("ㅡㅡㅡㅡㅡㅡㅡㅡ")
+        println(updatedQuote.score)
+        println("ㅡㅡㅡㅡㅡㅡㅡㅡ")
         assert(updatedQuote.score == 1)
     }
 
