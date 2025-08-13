@@ -18,12 +18,13 @@ class SecurityConfig(
         http
             .csrf { it.disable() }
             .headers { it.frameOptions { it.disable() } } // for h2-console
-            .authorizeHttpRequests {
-                it.requestMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**").permitAll()
-                it.requestMatchers("/api/v1/**").hasRole("USER")
-                it.requestMatchers("/api/admin/**").hasRole("ADMIN")
-                it.anyRequest().authenticated()
-            }
+            // 임시 처리
+//            .authorizeHttpRequests {
+//                it.requestMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**").permitAll()
+//                it.requestMatchers("/api/v1/**").hasRole("USER")
+//                it.requestMatchers("/api/admin/**").hasRole("ADMIN")
+//                it.anyRequest().authenticated()
+//            }
             .logout { it.logoutSuccessUrl("/") }
             .oauth2Login {
                 it.userInfoEndpoint {
